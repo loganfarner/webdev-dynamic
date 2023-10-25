@@ -14,6 +14,14 @@ const template = path.join(__dirname, 'templates');
 let app = express();
 app.use(express.static(root));
 
+const db = new sqlite3.Database(path.join(__dirname, 'powerplants.sqlite3'), sqlite3.OPEN_READONLY, (err)=>{
+    if (err){
+        console.log('error connecting to database');
+    } else {
+        console.log('Succesfully connected to database');
+    }
+});
+
 app.listen(port, () => {
     console.log('Now listening on port ' + port);
 });
