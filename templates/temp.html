@@ -1,10 +1,58 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>TEMP</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Homepage</title>
+    <link rel="stylesheet" href="css/foundation.css">
+    <link rel="stylesheet" href="css/plantStyles.css">
 </head>
 <body>
+    <div class="off-canvas-wrapper">
+
+        
+
+        <!-- Your page content lives here -->
+        <div class="off-canvas-content" data-off-canvas-content>
+            <!--Heading-->
+            <h3 style="text-align: center;color: rgb(57, 2, 196);">Welcome To PowerPlant</h3>
+
+               <!--Heading-->
+            <div class="grid-x grid-padding-x" style="background-color: rgba(0, 0, 0,0.5);">
+              
+                <div class="cell small-auto large-12 myheadercss ">
+
+                    <p id="#graph"> $$GraphData$$ </p>
+                </div>    
+
+            </div>
+
+        </div>
+
+            <div class = "grid-padding-x" style="background-color: rgba(37, 2, 2, 0.5); " id="myStoryContent">
+				<div id="myPlot"></div>
+
+				
+				<div class="cell small-auto large-12">
+
+                    
+
+                    
+                        
+                    
+                </div>
+				
+            </div>
+
+        </div>
+    </div>
+    <script src="js/vendor/jquery.js"></script>
+    <script src="js/vendor/what-input.js"></script>
+    <script src="js/vendor/foundation.js"></script>
+	<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script type="application/javascript">
+        $(document).foundation();
+    </script>
+
 </body>
 </html>
