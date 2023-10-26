@@ -47,7 +47,7 @@ app.get('/power/:source', (req, res) => {
             res.status(404).type('html').send('Error');
         });
 
-      //logan  
+      
     }else if (source == 'fuel') {
         filePath = path.join(templates,'fuel.html');
         let p1 = dbSelect('SELECT * FROM country_plant WHERE mfr = ?', [plant]);
@@ -96,28 +96,9 @@ app.get('/power/:source', (req, res) => {
     }
 });
 
-const db = new sqlite3.Database(path.join(__dirname, 'powerplant.sqlite3'), sqlite3.OPEN_READONLY, (err)=>{
-    if (err){
-        console.log('error connecting to database');
-    } else {
-        console.log('Succesfully connected to database');
-    }
-});
-
-function dbSelect (query, params){
-    let p = new Promise ((resolve, reject) => {
-        db.all(query, params, (err, rows) => {
-            if (err) {
-                reject(err);
-            } else {
-                resolve(rows);
-            }
-        });
-    });
-    return p;
-}
 
 
+/*
 //Fuel Source template filler
 //Logan
 app.get('/fuel/:source', (req, res)=>{
@@ -150,7 +131,7 @@ app.get('/fuel/:source', (req, res)=>{
         console.log(error);
         res.status(404).type('txt').send('Error Dumb Dumb');
     });
-});
+});*/
 
 app.listen(port, () => {
     console.log('Now listening on port ' + port);
