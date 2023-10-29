@@ -61,7 +61,8 @@ app.get('/power/fuel/:source', (req, res) => {
     let p1 = dbSelect('SELECT * FROM info WHERE primary_fuel = ?', [primary_fuel]);
     let p2 = fs.promises.readFile(filePath, 'utf-8');
     Promise.all([p1,p2]).then((results) => {
-        let response = displayTable(results,"Plants who's primary fuel source is " + primary_fuel );
+        let headerReplacement = "Plants who's primary fuel source is " + primary_fuel;
+        let response = displayTable(results, headerReplacement);
         res.status(200).type('html').send(response);
     }).catch((error) => {
         console.log(error);
@@ -87,7 +88,8 @@ app.get('/power/capacity/:size', (req, res) => {
     }
     let p2 = fs.promises.readFile(filePath, 'utf-8');
     Promise.all([p1,p2]).then((results) => {
-        let response = displayTable(results, "Plants with " + size + " capacity");
+        let headerReplacement = "Plants with " + size + " capacity";
+        let response = displayTable(results, headerReplacement);
         res.status(200).type('html').send(response);
     }).catch((error) => {
         console.log(error);
