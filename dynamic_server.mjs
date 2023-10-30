@@ -70,7 +70,7 @@ app.get('/power/fuel/:source', (req, res) => {
     });
 });
 
-//route for displaying by primary fuel source
+//route for displaying by capacity source
 app.get('/power/capacity/:size', (req, res) => {
     let size = req.params.size.toString().toLowerCase();
     console.log('capacity: ' + size);
