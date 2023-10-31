@@ -17,11 +17,18 @@ app.use('/css', express.static(path.join(__dirname, 'public/css')));
 
 const fuelSourceArray = ['biomass', 'coal', 'cogeneration', 'gas', 'geothermal', 'hydro', 'nuclear', 'oil', 'petcoke', 'solar', 'storage', 'waste', 'wave', 'wind', 'other']
 
+let countryArray = [];
 const db = new sqlite3.Database(path.join(__dirname, 'powerplant.sqlite3'), sqlite3.OPEN_READONLY, (err)=>{
     if (err){
         console.log('error connecting to database');
     } else {
         console.log('Succesfully connected to database');
+        dbSelect('SELECT country_code FROM country').then((rows) => {
+            countryArray = rows;
+            for (var i = 0; i < countryArray.length; i++) {
+                countryArray[i] = countryArray[i].country_code;
+              }
+        });
     }
 });
 
@@ -124,6 +131,33 @@ app.get('/power/capacity/:size', (req, res) => {
     }).catch((error) => {
         console.log(error);
         //res.status(404).type('txt').send('');
+    });
+});
+
+app.get('/power/country/:code', (req, res) => {
+    let country_lower = req.params.code.toString().toUpperCase();
+    console.log(country_lower);
+    let index = countryArray.indexOf(country_lower);
+    if (index == -1){ res.status(404).type('txt').send('404 Page Not Found. '+country_lower+' is not a valid country code.');
+        throw new Error('404 Page Not Found. '+country_lower+' is not a valid country code.')};
+    let code_country = country_lower.charAt(0).toUpperCase() + country_lower.slice(1);
+    let previousSource = countryArray[index-1];
+    let nextSource = countryArray[index+1];
+    if (code_country == 'ZWE'){nextSource = 'AFG'}
+    else if (code_country == 'AFG'){previousSource = 'ZWE'};
+    let previousLink = 'http://localhost:8000/power/country/' + previousSource;
+    let nextLink = 'http://localhost:8000/power/country/' + nextSource;
+    let headerReplacement = "Plants in " + code_country;
+    console.log('country: ' + code_country);
+    let filePath = path.join(templates,'country.html');
+    let p1 = dbSelect('SELECT * FROM info WHERE country_code = ?', [code_country]);
+    let p2 = fs.promises.readFile(filePath, 'utf-8');
+    Promise.all([p1,p2]).then((results) => {
+        let response = displayTable(results, headerReplacement, nextLink, previousLink);
+        res.status(200).type('html').send(response);
+    }).catch((error) => {
+        console.log(error);
+        //res.status(404).type('txt').send('404 Page Not Found. '+primary_fuel_lower+' is not a valid fuel source.');
     });
 });
 
