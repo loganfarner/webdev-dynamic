@@ -13,7 +13,7 @@ const templates = path.join(__dirname, 'templates');
 
 let app = express();
 
-app.use('/css', express.static(path.join(__dirname, 'public/css')));
+app.use(express.static(path.join(__dirname, 'public/css')));
 
 const fuelSourceArray = ['biomass', 'coal', 'cogeneration', 'gas', 'geothermal', 'hydro', 'nuclear', 'oil', 'petcoke', 'solar', 'storage', 'waste', 'wave', 'wind', 'other']
 
@@ -72,6 +72,7 @@ app.get('/power/:source', (req, res) => {
 //route for displaying by primary fuel source
 app.get('/power/fuel/:source', (req, res) => {
     let primary_fuel_lower = req.params.source;
+    const origin='fuel';
     if (primary_fuel_lower == 'all_data'){
         let headerReplacement = "Displaying All Power Plants";
         let filePath = path.join(templates,'fuel.html');
@@ -103,7 +104,9 @@ app.get('/power/fuel/:source', (req, res) => {
     let p1 = dbSelect('SELECT * FROM info WHERE primary_fuel = ?', [primary_fuel]);
     let p2 = fs.promises.readFile(filePath, 'utf-8');
     Promise.all([p1,p2]).then((results) => {
-        let response = displayTable(results, headerReplacement, nextLink, previousLink);
+        const graph = displayGraph(origin,results[0]);
+        console.log(graph);
+        let response = displayTable(results, headerReplacement, nextLink, previousLink,graph);
         res.status(200).type('html').send(response);
     }).catch((error) => {
         console.log(error);
@@ -121,6 +124,7 @@ app.get('/power/capacity/:size', (req, res) => {
     let previousLink = '';
     let filePath = path.join(templates,'capacity.html');
     let p1 = null;
+    const origin="capacity";
     if (size == 'low'){
         p1 = dbSelect('SELECT * FROM info WHERE capacity_mw <200');
         nextLink = 'http://localhost:8000/power/capacity/medium';
@@ -139,8 +143,10 @@ app.get('/power/capacity/:size', (req, res) => {
     }
     let p2 = fs.promises.readFile(filePath, 'utf-8');
     Promise.all([p1,p2]).then((results) => {
+        const graph = displayGraph(origin,results[0]);
+        console.log(graph);
         let headerReplacement = "Plants with " + size + " capacity";
-        let response = displayTable(results, headerReplacement, nextLink, previousLink);
+        let response = displayTable(results, headerReplacement, nextLink, previousLink,graph);
         res.status(200).type('html').send(response);
     }).catch((error) => {
         console.log(error);
@@ -169,7 +175,9 @@ app.get('/power/country/:code', (req, res) => {
     let p1 = dbSelect('SELECT * FROM info WHERE country_code = ?', [code_country]);
     let p2 = fs.promises.readFile(filePath, 'utf-8');
     Promise.all([p1,p2]).then((results) => {
-        let response = displayTable(results, headerReplacement, nextLink, previousLink);
+        const graph = displayGraph(results[0]);
+        console.log(graph);
+        let response = displayTable(results, headerReplacement, nextLink, previousLink,graph);
         res.status(200).type('html').send(response);
     }).catch((error) => {
         console.log(error);
@@ -185,6 +193,7 @@ app.get('/power/estimated/:size', (req, res) => {
     let previousLink = '';
     let filePath = path.join(templates,'estimated.html');
     let p1 = null;
+    const origin="estimated";
     if (size == 'low'){
         p1 = dbSelect('SELECT * FROM info WHERE estimated2017 <200');
         nextLink = 'http://localhost:8000/power/estimated/medium';
@@ -203,8 +212,12 @@ app.get('/power/estimated/:size', (req, res) => {
     }
     let p2 = fs.promises.readFile(filePath, 'utf-8');
     Promise.all([p1,p2]).then((results) => {
+        const graph = displayGraph(origin,results[0]);
+        console.log(graph);
+        
+        //templateData = templateData.replace('$$Graph$$', JSON.stringify(chartData));
         let headerReplacement = "Plants with " + size + " 2017 Estimated Energy Generation";
-        let response = displayTable(results, headerReplacement, nextLink, previousLink);
+        let response = displayTable(results, headerReplacement, nextLink, previousLink,graph);
         res.status(200).type('html').send(response);
     }).catch((error) => {
         console.log(error);
@@ -231,11 +244,13 @@ app.get('/home', (req, res) => {
 
 
 //function for sending the table
-function displayTable(results, headerReplacement, nextLink, previousLink){
+function displayTable(results, headerReplacement, nextLink, previousLink,graph){
     let plant_list = results[0];
+    
         let response = results[1].replace('$$Sorted_By_Header$$', headerReplacement);
         response = response.replace('%%Previous_Link%%', previousLink);
         response = response.replace('%%Next_Link%%', nextLink);
+        response = response.replace('$$Graph$$', JSON.stringify(graph));
         let table_body = '';
         plant_list.forEach((plant_list) => {
             let table_row = '<tr>';
@@ -250,13 +265,42 @@ function displayTable(results, headerReplacement, nextLink, previousLink){
             table_row += '</tr>';
             table_body += table_row;
         });
+        
         response = response.replace('$$TABLE_DATA$$', table_body);
         return response;
 }
 
 
-function displayGraph(){
-}
+function displayGraph(origin,results) {
+    let chartData = {
+        label1: [],
+        label2: []
+      };
+    
+    if(origin=='capacity'){
+        chartData = {
+            countryNames: results.map(item => item.country_name),
+            energyCapacity: results.map(item => item.capacity_mw)
+          };
+
+    }else if(origin=='estimated'){
+        chartData = {
+            countryNames: results.map(item => item.country_name),
+            estimated2017: results.map(item => item.estimated2017)
+          };
+
+    }else if(origin=='fuel'){
+        chartData = {
+            countryNames: results.map(item => item.country_name),
+            fuelType: results.map(item => item.primary_fuel)
+          };
+
+    }
+    
+
+    return chartData;
+  }
+  
 
 function dbSelect(query, params) {
     let p = new Promise((resolve, reject) => {
