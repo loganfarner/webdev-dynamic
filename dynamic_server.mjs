@@ -199,6 +199,23 @@ app.get('/power/estimated/:size', (req, res) => {
     });
 });
 
+app.get('/home', (req, res) => {
+    let finishAndSend = function() {
+        fs.readFile(path.join(templates, 'home.html'), 'utf-8', (err, data) => {
+            let countries = '';
+
+            for (var i = 0; i < countryArray.length; i++) {
+                let countryName = countryArray[i].country_name;
+                let countryCode = countryArray[i].country_code;
+                countries += '<li><a href="http://localhost:8000/power/country/' + countryCode + '">'+ countryName +'</li>';
+            }
+            let response = data.replace('$$COUNTRY_LINK$$', countries);
+            res.status(200).type('html').send(response);
+        });
+    };
+    finishAndSend();
+})
+
 
 //function for sending the table
 function displayTable(results, headerReplacement, nextLink, previousLink){
@@ -240,5 +257,3 @@ function dbSelect(query, params) {
 app.listen(port, () => {
     console.log('Now listening on port ' + port);
 });
-
-
