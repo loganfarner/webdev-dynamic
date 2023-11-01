@@ -1,10 +1,10 @@
 {
     "name": "dynamic_server",
-    "description": "Dynamic Server",
+    "description": "Dynamic Server to visualize data about global power plants in a variety of ways",
     "version": "1.0.0",
     "author": {
-        "name": "Logan Farner",
-        "email": "logan.farner@stthomas.edu"
+        "name": "Prince Sarpong",
+        "email": "sarp4474@stthomas.edu"
     },
     "contributors": [
         {
@@ -14,6 +14,10 @@
         {
             "name": "Gratzia Maria",
             "email": "inda4434@stthomas.edu"
+        },
+        {
+            "name": "Logan Farner",
+            "email": "farn8796@stthomas.edu"
         }
     ],
     "repository": {},

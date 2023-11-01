@@ -45,6 +45,8 @@ app.get('/power/:source', (req, res) => {
     let query4 = dbSelect('SELECT estimated2017 FROM info ');  
     let p2 = fs.promises.readFile(filePath, 'utf-8');
 
+    
+    
     if (source != 'index') {
         // Handle the case where source is not 'index'
         res.status(404).type('html').send('File not found');
@@ -70,6 +72,19 @@ app.get('/power/:source', (req, res) => {
 //route for displaying by primary fuel source
 app.get('/power/fuel/:source', (req, res) => {
     let primary_fuel_lower = req.params.source;
+    if (primary_fuel_lower == 'all_data'){
+        let headerReplacement = "Displaying All Power Plants";
+        let filePath = path.join(templates,'fuel.html');
+        let p1 = dbSelect('SELECT * FROM info');
+        let p2 = fs.promises.readFile(filePath, 'utf-8');
+        Promise.all([p1,p2]).then((results) => {
+            let response = displayTable(results, headerReplacement, 'http://localhost:8000/power/all_data', 'http://localhost:8000/power/all_data');
+            res.status(200).type('html').send(response);
+        }).catch((error) => {
+            console.log(error);
+            res.status(404).type('txt').send('404 Page Not Found.');
+        });
+    } else {
     let index = fuelSourceArray.indexOf(primary_fuel_lower);
    
     if (index == -1){ res.status(404).type('txt').send('404 Page Not Found. "'+primary_fuel_lower+'"s is not a valid fuel source.');
@@ -94,6 +109,8 @@ app.get('/power/fuel/:source', (req, res) => {
         console.log(error);
         //res.status(404).type('txt').send('404 Page Not Found. '+primary_fuel_lower+' is not a valid fuel source.');
     });
+    };
+    
 });
 
 //route for displaying by capacity source
