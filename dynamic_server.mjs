@@ -95,8 +95,8 @@ app.get('/power/fuel/:source', (req, res) => {
     let nextSource = fuelSourceArray[index+1];
     if (primary_fuel == 'Other'){nextSource = 'biomass'}
     else if (primary_fuel == 'Biomass'){previousSource = 'other'};
-    let previousLink = 'http://localhost:8000/power/fuel/' + previousSource;
-    let nextLink = 'http://localhost:8000/power/fuel/' + nextSource;
+    let previousLink = './' + previousSource;
+    let nextLink = './' + nextSource;
     if (primary_fuel == 'Wave'){primary_fuel = "Wave and Tidal"};
     let headerReplacement = "Plants who's primary fuel source is " + primary_fuel;
     console.log('primary_fuel: ' + primary_fuel);
@@ -127,16 +127,16 @@ app.get('/power/capacity/:size', (req, res) => {
     const origin="capacity";
     if (size == 'low'){
         p1 = dbSelect('SELECT * FROM info WHERE capacity_mw <200');
-        nextLink = 'http://localhost:8000/power/capacity/medium';
-        previousLink = 'http://localhost:8000/power/capacity/high';
+        nextLink = './medium';
+        previousLink = './high';
     } else if (size == 'medium'){
         p1 = dbSelect('SELECT * FROM info WHERE capacity_mw >=200 and capacity_mw <=600');
-        nextLink = 'http://localhost:8000/power/capacity/high';
-        previousLink = 'http://localhost:8000/power/capacity/low';
+        nextLink = './high';
+        previousLink = './low';
     } else if (size == 'high'){
         p1 = dbSelect('SELECT * FROM info WHERE capacity_mw >600');
-        nextLink = 'http://localhost:8000/power/capacity/low';
-        previousLink = 'http://localhost:8000/power/capacity/medium';
+        nextLink = './low';
+        previousLink = './medium';
     } else {
         res.status(404).type('txt').send('404 page not found. Capacity "' + size +'" invalid.');
         throw new Error();
@@ -166,8 +166,8 @@ app.get('/power/country/:code', (req, res) => {
     let nextSource = countryCodeArray[index+1];
     if (code_country == 'ZWE'){nextSource = 'AFG'}
     else if (code_country == 'AFG'){previousSource = 'ZWE'};
-    let previousLink = 'http://localhost:8000/power/country/' + previousSource;
-    let nextLink = 'http://localhost:8000/power/country/' + nextSource;
+    let previousLink = './' + previousSource;
+    let nextLink = './' + nextSource;
     let countryName = countryArray[index].country_name;
     let headerReplacement = "Plants in " + countryName;
     console.log('country: ' + code_country);
@@ -196,16 +196,16 @@ app.get('/power/estimated/:size', (req, res) => {
     const origin="estimated";
     if (size == 'low'){
         p1 = dbSelect('SELECT * FROM info WHERE estimated2017 <200');
-        nextLink = 'http://localhost:8000/power/estimated/medium';
-        previousLink = 'http://localhost:8000/power/estimated/high';
+        nextLink = './medium';
+        previousLink = './high';
     } else if (size == 'medium'){
         p1 = dbSelect('SELECT * FROM info WHERE estimated2017 >=200 and estimated2017 <=1000');
-        nextLink = 'http://localhost:8000/power/estimated/high';
-        previousLink = 'http://localhost:8000/power/estimated/low';
+        nextLink = './high';
+        previousLink = './low';
     } else if (size == 'high'){
         p1 = dbSelect('SELECT * FROM info WHERE estimated2017 >600');
-        nextLink = 'http://localhost:8000/power/estimated/low';
-        previousLink = 'http://localhost:8000/power/estimated/medium';
+        nextLink = './low';
+        previousLink = './medium';
     } else {
         res.status(404).type('txt').send('404 page not found. 2017 Estimated Energy Generation "' + size +'" invalid.');
         throw new Error();
@@ -233,7 +233,7 @@ app.get('/home', (req, res) => {
             for (var i = 0; i < countryArray.length; i++) {
                 let countryName = countryArray[i].country_name;
                 let countryCode = countryArray[i].country_code;
-                countries += '<li><a href="http://localhost:8000/power/country/' + countryCode + '">'+ countryName +'</li>';
+                countries += '<li><a href="./power/country/' + countryCode + '">'+ countryName +'</li>';
             }
             let response = data.replace('$$COUNTRY_LINK$$', countries);
             res.status(200).type('html').send(response);
