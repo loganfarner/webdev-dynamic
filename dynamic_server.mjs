@@ -33,49 +33,45 @@ const db = new sqlite3.Database(path.join(__dirname, 'powerplant.sqlite3'), sqli
     }
 });
 
-
-
 //updated
 app.get('/power/:source', (req, res) => {
+    let source = req.params.source;
+    let filePath = path.join(templates, 'temp.html');
     
-    let source = req.params.source.toLowerCase();
-    let filePath = "";
+    
+    let query1 = dbSelect('SELECT country_name FROM info '); 
+    let query2 = dbSelect('SELECT capacity_mw FROM info  ');  
+    let query3 = dbSelect('SELECT primary_fuel  FROM info ');  
+    let query4 = dbSelect('SELECT estimated2017 FROM info ');  
+    let p2 = fs.promises.readFile(filePath, 'utf-8');
 
-    if (source === '/' || source === "index") {
-
-        filePath = path.join(templates, 'temp.html'); 
-        let query1 = dbSelect('SELECT country_name as Country, capacity_mw as Capacity FROM info');
-        let p2 = fs.promises.readFile(filePath, 'utf-8');
-
-        Promise.all([query1, p2]).then(([results, templateData]) => {
-            let response = templateData.replace('$$GraphData$$', JSON.stringify(results));
-            res.status(200).type('html').send(response);
-        }).catch((error) => {
-            console.log(error);
-            res.status(404).type('html').send('Error');
-        });
-   //updated
-    } else if (source == 'all_data'){
-        let headerReplacement = "Displaying All Power Plants";
-        let filePath = path.join(templates,'fuel.html');
-        let p1 = dbSelect('SELECT * FROM info');
-        let p2 = fs.promises.readFile(filePath, 'utf-8');
-        Promise.all([p1,p2]).then((results) => {
-            let response = displayTable(results, headerReplacement, 'http://localhost:8000/power/all_data', 'http://localhost:8000/power/all_data');
-            res.status(200).type('html').send(response);
-        }).catch((error) => {
-            console.log(error);
-            res.status(404).type('txt').send('404 Page Not Found.');
-        });
-    } else {
+    if (source != 'index') {
+        // Handle the case where source is not 'index'
         res.status(404).type('html').send('File not found');
+        return; // Exit the function
     }
+
+    Promise.all([query1, query2, query3, query4, p2]).then(([results1, results2, results3, results4, templateData]) => {
+        const chartData = {
+            countryNames: results1.map(item => item.country_name),
+            energyCapacity: results2.map(item => item.capacity_mw),
+            fuelType: results3.map(item => item.primary_fuel),
+            estimated2017: results4.map(item => item.estimated2017)
+        };
+        //console.log(JSON.stringify(chartData));
+        templateData = templateData.replace('$$Graph$$', JSON.stringify(chartData));
+        res.status(200).type('html').send(templateData);
+    }).catch((error) => {
+        console.log(error);
+        res.status(404).type('html').send('Error');
+    });
 });
 
 //route for displaying by primary fuel source
 app.get('/power/fuel/:source', (req, res) => {
     let primary_fuel_lower = req.params.source;
     let index = fuelSourceArray.indexOf(primary_fuel_lower);
+   
     if (index == -1){ res.status(404).type('txt').send('404 Page Not Found. "'+primary_fuel_lower+'"s is not a valid fuel source.');
         throw new Error('404 Page Not Found. '+primary_fuel_lower+' is not a valid fuel source.')};
     let primary_fuel = primary_fuel_lower.charAt(0).toUpperCase() + primary_fuel_lower.slice(1);
@@ -239,6 +235,10 @@ function displayTable(results, headerReplacement, nextLink, previousLink){
         });
         response = response.replace('$$TABLE_DATA$$', table_body);
         return response;
+}
+
+
+function displayGraph(){
 }
 
 function dbSelect(query, params) {

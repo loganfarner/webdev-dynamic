@@ -4,56 +4,76 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Homepage</title>
-    <link rel="stylesheet" href="css/foundation.css">
-    <link rel="stylesheet" href="css/plantStyles.css">
+   
+    <script src="https://cdn.plot.ly/plotly-latest.min.js" charset="utf-8"></script>
 </head>
 <body>
-    <div class="off-canvas-wrapper">
-
-        
-
-        <!-- Your page content lives here -->
-        <div class="off-canvas-content" data-off-canvas-content>
-            <!--Heading-->
-            <h3 style="text-align: center;color: rgb(57, 2, 196);">Welcome To PowerPlant</h3>
-
-               <!--Heading-->
-            <div class="grid-x grid-padding-x" style="background-color: rgba(0, 0, 0,0.5);">
-              
-                <div class="cell small-auto large-12 myheadercss ">
-
-                    <p id="#graph"> $$GraphData$$ </p>
-                </div>    
-
-            </div>
-
-        </div>
-
-            <div class = "grid-padding-x" style="background-color: rgba(37, 2, 2, 0.5); " id="myStoryContent">
-				<div id="myPlot"></div>
-
-				
-				<div class="cell small-auto large-12">
-
-                    
-
-                    
-                        
-                    
-                </div>
-				
-            </div>
-
-        </div>
+    <div> 
+        <h3 style="text-align: center;color: rgb(57, 2, 196);">Welcome To PowerPlant</h3>   
+        <div id="chart"></div> <!-- Use a div for the chart -->
     </div>
-    <script src="js/vendor/jquery.js"></script>
-    <script src="js/vendor/what-input.js"></script>
-    <script src="js/vendor/foundation.js"></script>
-	<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
-    <script type="application/javascript">
-        $(document).foundation();
-    </script>
 
-	
+    <p>Fuel type:</p>
+    <select id="fuelType" >
+        <option value="oil">Oil</option>
+        <option value="solar">Solar</option>
+        <option value="hydro">Hydro</option>
+    </select>
+
+    <p>Energy Capacity:</p>
+    <select id="fuelType" >
+        <option value="Low">Low</option>
+        <option value="Medium">Medium</option>
+        <option value="High">High</option>
+    </select>
+
+    
+
+    <!-- placeholder for the chart -->
+
+    <div id="chart"></div>
+    <div id="chart2"></div>
+    <div id="chart3"></div>
+    
+
+    <script>
+        //graph for one query
+        const chartData = $$Graph$$;
+        console.log(chartData);
+        const data = [{
+            x: chartData.countryNames,
+            y: chartData.energyCapacity,
+            type: "bar"
+        }];
+    
+        const layout = {
+            title: "Countries and their energyCapacities"
+        };
+    
+        Plotly.newPlot("chart", data, layout);
+    
+        const data2 = [{
+            labels: chartData.fuelType,
+            values: chartData.countryNames,
+            type: "pie"
+        }];
+        const layout2 = {
+            title: "Countries and their Fuel Types"
+        };
+        Plotly.newPlot("chart2", data2, layout2);
+    
+        const data3 = [{
+            x: chartData.countryNames,
+            y: chartData.estimated2017,
+            type: "bar"
+        }];
+        const layout3 = {
+            title: "Countries and their 2017 estimate"
+        };
+        Plotly.newPlot("chart3", data3, layout3);
+    </script>
+    
 </body>
 </html>
+
+
