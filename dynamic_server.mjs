@@ -95,8 +95,8 @@ app.get('/power/fuel/:source', (req, res) => {
     let nextSource = fuelSourceArray[index+1];
     if (primary_fuel == 'Other'){nextSource = 'biomass'}
     else if (primary_fuel == 'Biomass'){previousSource = 'other'};
-    let previousLink = './' + previousSource;
-    let nextLink = './' + nextSource;
+    let previousLink = '/power/fuel/' + previousSource;
+    let nextLink = '/power/fuel/' + nextSource;
     if (primary_fuel == 'Wave'){primary_fuel = "Wave and Tidal"};
     let headerReplacement = "Plants who's primary fuel source is " + primary_fuel;
     console.log('primary_fuel: ' + primary_fuel);
@@ -127,16 +127,16 @@ app.get('/power/capacity/:size', (req, res) => {
     const origin="capacity";
     if (size == 'low'){
         p1 = dbSelect('SELECT * FROM info WHERE capacity_mw <200');
-        nextLink = './medium';
-        previousLink = './high';
+        nextLink = '/power/capacity/medium';
+        previousLink = '/power/capacity/high';
     } else if (size == 'medium'){
         p1 = dbSelect('SELECT * FROM info WHERE capacity_mw >=200 and capacity_mw <=600');
-        nextLink = './high';
-        previousLink = './low';
+        nextLink = '/power/capacity/high';
+        previousLink = '/power/capacity/low';
     } else if (size == 'high'){
         p1 = dbSelect('SELECT * FROM info WHERE capacity_mw >600');
-        nextLink = './low';
-        previousLink = './medium';
+        nextLink = '/power/capacity/low';
+        previousLink = '/power/capacity/medium';
     } else {
         res.status(404).type('txt').send('404 page not found. Capacity "' + size +'" invalid.');
         throw new Error();
@@ -166,8 +166,8 @@ app.get('/power/country/:code', (req, res) => {
     let nextSource = countryCodeArray[index+1];
     if (code_country == 'ZWE'){nextSource = 'AFG'}
     else if (code_country == 'AFG'){previousSource = 'ZWE'};
-    let previousLink = './' + previousSource;
-    let nextLink = './' + nextSource;
+    let previousLink = '/power/country/' + previousSource;
+    let nextLink = '/power/country/' + nextSource;
     let countryName = countryArray[index].country_name;
     let headerReplacement = "Plants in " + countryName;
     console.log('country: ' + code_country);
@@ -196,16 +196,16 @@ app.get('/power/estimated/:size', (req, res) => {
     const origin="estimated";
     if (size == 'low'){
         p1 = dbSelect('SELECT * FROM info WHERE estimated2017 <200');
-        nextLink = './medium';
-        previousLink = './high';
+        nextLink = '/power/estimated/medium';
+        previousLink = '/power/estimated/high';
     } else if (size == 'medium'){
         p1 = dbSelect('SELECT * FROM info WHERE estimated2017 >=200 and estimated2017 <=1000');
-        nextLink = './high';
-        previousLink = './low';
+        nextLink = '/power/estimated/high';
+        previousLink = '/power/estimated/low';
     } else if (size == 'high'){
         p1 = dbSelect('SELECT * FROM info WHERE estimated2017 >600');
-        nextLink = './low';
-        previousLink = './medium';
+        nextLink = '/power/estimated/low';
+        previousLink = '/power/estimated/medium';
     } else {
         res.status(404).type('txt').send('404 page not found. 2017 Estimated Energy Generation "' + size +'" invalid.');
         throw new Error();
