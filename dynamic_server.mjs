@@ -185,12 +185,12 @@ app.get('/power/estimated/:size', (req, res) => {
         nextLink = 'http://localhost:8000/power/estimated/low';
         previousLink = 'http://localhost:8000/power/estimated/medium';
     } else {
-        res.status(404).type('txt').send('404 page not found. Estimated electricity "' + size +'" invalid.');
+        res.status(404).type('txt').send('404 page not found. 2017 Estimated Energy Generation "' + size +'" invalid.');
         throw new Error();
     }
     let p2 = fs.promises.readFile(filePath, 'utf-8');
     Promise.all([p1,p2]).then((results) => {
-        let headerReplacement = "Plants with " + size + " estimated electicity";
+        let headerReplacement = "Plants with " + size + " 2017 Estimated Energy Generation";
         let response = displayTable(results, headerReplacement, nextLink, previousLink);
         res.status(200).type('html').send(response);
     }).catch((error) => {
