@@ -4,6 +4,7 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Global Power Plants Database</title>
+    <link rel="stylesheet" href="/css/plantStyles.css"/>
 </head>
 <body>
     <h1>Global Power Plants Database</h1>
@@ -40,6 +41,14 @@
             <li><a href="http://localhost:8000/power/estimated/medium">Medium (200-1000)</a></li>
             <li><a href="http://localhost:8000/power/estimated/High">High (1000 &lt)</a></li>
         </ul>
+    </p>
+    <p> 
+        <div class="dropdown">
+            <button>View by Country</button>
+            <div class="dropdown-content">
+                $$COUNTRY_LINKS$$
+            </div>
+        </div>
     </p>
     <h2>$$Sorted_By_Header$$</h2>
     <p><a href="%%Previous_Link%%">Previous  </a> <a href="%%Next_Link%%">Next</a></p>

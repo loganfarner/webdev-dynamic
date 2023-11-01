@@ -13,7 +13,7 @@ const templates = path.join(__dirname, 'templates');
 
 let app = express();
 
-app.use(express.static(path.join(__dirname, 'public/css')));
+app.use('/css', express.static(path.join(__dirname, 'public/css')));
 
 const fuelSourceArray = ['biomass', 'coal', 'cogeneration', 'gas', 'geothermal', 'hydro', 'nuclear', 'oil', 'petcoke', 'solar', 'storage', 'waste', 'wave', 'wind', 'other']
 
@@ -242,6 +242,17 @@ app.get('/home', (req, res) => {
     finishAndSend();
 })
 
+//function for the dropdown menu
+function countryDropdown(){
+    let countries = '';
+    for (var i = 0; i < countryArray.length; i++) {
+        let countryName = countryArray[i].country_name;
+        let countryCode = countryArray[i].country_code;
+        countries += '<a href="http://localhost:8000/power/country/' + countryCode + '">'+ countryName +'</a>';
+    }
+    return countries;
+}
+
 
 //function for sending the table
 function displayTable(results, headerReplacement, nextLink, previousLink,graph){
@@ -267,6 +278,8 @@ function displayTable(results, headerReplacement, nextLink, previousLink,graph){
         });
         
         response = response.replace('$$TABLE_DATA$$', table_body);
+        let countries = countryDropdown();
+        response = response.replace('$$COUNTRY_LINKS$$', countries);
         return response;
 }
 
