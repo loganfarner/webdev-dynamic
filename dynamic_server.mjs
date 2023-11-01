@@ -18,15 +18,16 @@ app.use('/css', express.static(path.join(__dirname, 'public/css')));
 const fuelSourceArray = ['biomass', 'coal', 'cogeneration', 'gas', 'geothermal', 'hydro', 'nuclear', 'oil', 'petcoke', 'solar', 'storage', 'waste', 'wave', 'wind', 'other']
 
 let countryArray = [];
+let countryCodeArray = [];
 const db = new sqlite3.Database(path.join(__dirname, 'powerplant.sqlite3'), sqlite3.OPEN_READONLY, (err)=>{
     if (err){
         console.log('error connecting to database');
     } else {
         console.log('Succesfully connected to database');
-        dbSelect('SELECT country_code FROM country').then((rows) => {
+        dbSelect('SELECT * FROM country').then((rows) => {
             countryArray = rows;
             for (var i = 0; i < countryArray.length; i++) {
-                countryArray[i] = countryArray[i].country_code;
+                countryCodeArray[i] = countryArray[i].country_code;
               }
         });
     }
@@ -134,20 +135,22 @@ app.get('/power/capacity/:size', (req, res) => {
     });
 });
 
+//route for country
 app.get('/power/country/:code', (req, res) => {
     let country_lower = req.params.code.toString().toUpperCase();
     console.log(country_lower);
-    let index = countryArray.indexOf(country_lower);
+    let index = countryCodeArray.indexOf(country_lower);
     if (index == -1){ res.status(404).type('txt').send('404 Page Not Found. '+country_lower+' is not a valid country code.');
         throw new Error('404 Page Not Found. '+country_lower+' is not a valid country code.')};
     let code_country = country_lower.charAt(0).toUpperCase() + country_lower.slice(1);
-    let previousSource = countryArray[index-1];
-    let nextSource = countryArray[index+1];
+    let previousSource = countryCodeArray[index-1];
+    let nextSource = countryCodeArray[index+1];
     if (code_country == 'ZWE'){nextSource = 'AFG'}
     else if (code_country == 'AFG'){previousSource = 'ZWE'};
     let previousLink = 'http://localhost:8000/power/country/' + previousSource;
     let nextLink = 'http://localhost:8000/power/country/' + nextSource;
-    let headerReplacement = "Plants in " + code_country;
+    let countryName = countryArray[index].country_name;
+    let headerReplacement = "Plants in " + countryName;
     console.log('country: ' + code_country);
     let filePath = path.join(templates,'country.html');
     let p1 = dbSelect('SELECT * FROM info WHERE country_code = ?', [code_country]);
@@ -160,6 +163,42 @@ app.get('/power/country/:code', (req, res) => {
         //res.status(404).type('txt').send('404 Page Not Found. '+primary_fuel_lower+' is not a valid fuel source.');
     });
 });
+
+//route for displaying by capacity source
+app.get('/power/estimated/:size', (req, res) => {
+    let size = req.params.size.toString().toLowerCase();
+    console.log('estimated electricity: ' + size);
+    let nextLink = '';
+    let previousLink = '';
+    let filePath = path.join(templates,'estimated.html');
+    let p1 = null;
+    if (size == 'low'){
+        p1 = dbSelect('SELECT * FROM info WHERE estimated2017 <200');
+        nextLink = 'http://localhost:8000/power/estimated/medium';
+        previousLink = 'http://localhost:8000/power/estimated/high';
+    } else if (size == 'medium'){
+        p1 = dbSelect('SELECT * FROM info WHERE estimated2017 >=200 and estimated2017 <=1000');
+        nextLink = 'http://localhost:8000/power/estimated/high';
+        previousLink = 'http://localhost:8000/power/estimated/low';
+    } else if (size == 'high'){
+        p1 = dbSelect('SELECT * FROM info WHERE estimated2017 >600');
+        nextLink = 'http://localhost:8000/power/estimated/low';
+        previousLink = 'http://localhost:8000/power/estimated/medium';
+    } else {
+        res.status(404).type('txt').send('404 page not found. Estimated electricity "' + size +'" invalid.');
+        throw new Error();
+    }
+    let p2 = fs.promises.readFile(filePath, 'utf-8');
+    Promise.all([p1,p2]).then((results) => {
+        let headerReplacement = "Plants with " + size + " estimated electicity";
+        let response = displayTable(results, headerReplacement, nextLink, previousLink);
+        res.status(200).type('html').send(response);
+    }).catch((error) => {
+        console.log(error);
+        //res.status(404).type('txt').send('');
+    });
+});
+
 
 //function for sending the table
 function displayTable(results, headerReplacement, nextLink, previousLink){
