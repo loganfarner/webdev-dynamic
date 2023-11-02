@@ -1,87 +1,17 @@
-/*
-body {
-    background-image: url("here.avif");
-    font-family: 'Courier New', Courier, monospace;
-    background-color: rgba(0,0,0,0.8);
-    
+html{
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 1rem;
+    background-color: rgb(243, 240, 240);
 }
 
-.header-container {
-    position: relative;
-    text-align: center; 
+body{
+    background-color: rgb(201, 201, 201);
 }
 
-
-.myheadercss {
-    color: white;
-    position:relative;
+h1{
+    text-align: center;
+    font-size: 2rem;
 }
-
-
-.headerpicture {
-width: 100%;
-}
-
-.myfootercss {
-    background-color: black;
-    height: 150px;
-}
-
-.mycontent {
-    background-color: rgba(0,0,0,0.8);
-    color: white;
-    
-}
-
-.myhomepagelinkscss {
-    
-    text-align:center;
-    margin: 25px;
-}
-
-
-
-#myHLinksID {
-    background-color:grey;  
-    position: relative;
-    float:right;
-    text-decoration:none;
-}
-
-
-
-h2 {
-    position:absolute;
-    top:50%;
-    left: 40%;
-    text-align:center;
-    font: bold 2.5rem Arial,"Times New Roman", sans-serif;
-}
-
-.sm {
-    position: absolute;
-    bottom:0px;
-
-
-}
-
-.changeS {
-  
-    img :hover{
-        height: 130px;
-        border: 2px solid black;
-       
-    }
-
-}
-
-
-
-#myStoryContent:target {
-    display: block;
-}
-*/
-
 
 /* unvisited link */
 a:link {
@@ -131,3 +61,4 @@ a:active {
     color: #FFFFFF;
     background-color: #00A4BD;
 }
+

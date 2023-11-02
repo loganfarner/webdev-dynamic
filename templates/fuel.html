@@ -4,56 +4,157 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Global Power Plants Database</title>
-    <link rel="stylesheet" href="/public/css/style.css"/>
+    <link rel="stylesheet" type="text/css" href="/public/css/style.css" />
+    <link rel="stylesheet" href="/public/css/foundation.css"/>
+    <style>
+        html{
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 1rem;
+            background-color: rgb(243, 240, 240);
+        }
+        body{
+        background-color: rgb(243, 240, 240);
+        }
+    
+        h1{
+            text-align: center;
+            font-size: 2rem;
+        }
+        .dropdown {
+        position: relative;
+        display: inline-block;
+        }
+    
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            width: 100%;
+            overflow: auto;
+            box-shadow: 0px 10px 10px 0px rgba(0,0,0,0.4);
+        }
+        
+        .dropdown:hover .dropdown-content {
+            display: block;
+            background-color: rgb(243, 240, 240);
+    
+        }
+        
+        .dropdown-content a {
+            display: block;
+            color: #000000;
+            padding: 5px;
+            text-decoration: none;
+        }
+        
+        .dropdown-content a:hover {
+            color: #FFFFFF;
+            background-color: #00A4BD;
+        }
+        .floatLeft{
+            float: left;
+        }
+        #table {
+            margin: auto;
+            font-family: Arial, Helvetica, sans-serif;
+            border-collapse: collapse;
+            max-width: 80%;
+        }
+
+        #table td, #table th {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+
+        #table tr:nth-child(even){background-color: #f2f2f2;}
+
+        #table tr:hover {background-color: #ddd;}
+
+        #table th {
+            padding-top: 12px;
+            padding-bottom: 12px;
+            text-align: left;
+            background-color: #0454aa;
+            color: white;
+            text-align: center;
+        }
+        ul{
+            list-style-type: none;
+        }
+        button {
+            border: none;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            font-size: 16px;
+        }
+        a:link, a:visited {
+            color: black;
+            text-decoration: none;
+        }
+
+        /* mouse over link */
+        a:hover {
+            color: teal;
+            text-decoration: underline;
+        }
+
+        /* selected link */
+        a:active {
+            color: green;
+        }
+        </style>
 </head>
 <body>
-    <h1>Global Power Plants Database</h1>
-    <p><a href="https://powerplant.onrender.com/power/fuel/all_data">View All Data</a></p>
-    <p> View by primary fuel source: 
-        <ul>
-            <li><a href="https://powerplant.onrender.com/power/fuel/biomass">Biomass</a></li>
-            <li><a href="https://powerplant.onrender.com/power/fuel/coal">Coal</a></li>
-            <li><a href="https://powerplant.onrender.com/power/fuel/cogeneration">Cogeneration</a></li>
-            <li><a href="https://powerplant.onrender.com/power/fuel/gas">Gas</a></li>
-            <li><a href="https://powerplant.onrender.com/power/fuel/geothermal">Geothermal</a></li>
-            <li><a href="https://powerplant.onrender.com/power/fuel/hydro">Hydro</a></li>
-            <li><a href="https://powerplant.onrender.com/power/fuel/nuclear">Nuclear</a></li>
-            <li><a href="https://powerplant.onrender.com/power/fuel/oil">Oil</a></li>
-            <li><a href="https://powerplant.onrender.com/power/fuel/petcoke">Petcoke</a></li>
-            <li><a href="https://powerplant.onrender.com/power/fuel/solar">Solar</a></li>
-            <li><a href="https://powerplant.onrender.com/power/fuel/storage">Storage</a></li>
-            <li><a href="https://powerplant.onrender.com/power/fuel/waste">Waste</a></li>
-            <li><a href="https://powerplant.onrender.com/power/fuel/wave">Wave and Tidal</a></li>
-            <li><a href="https://powerplant.onrender.com/power/fuel/wind">Wind</a></li>
-            <li><a href="https://powerplant.onrender.com/power/fuel/other">Other</a></li>
-        </ul>
-    </p>
-    <p> View by capacity
-        <ul>
-            <li><a href="https://powerplant.onrender.com/power/capacity/low">Low (200 >)</a></li>
-            <li><a href="https://powerplant.onrender.com/power/capacity/medium">Medium (200-599)</a></li>
-            <li><a href="https://powerplant.onrender.com/power/capacity/high">High (600 &lt)</a></li>
-        </ul>
-    </p>
-    <p> View by 2017 Estimated Energy Generation
-        <ul>
-            <li><a href="https://powerplant.onrender.com/power/estimated/low">Low (200 >)</a></li>
-            <li><a href="https://powerplant.onrender.com/power/estimated/medium">Medium (200-1000)</a></li>
-            <li><a href="https://powerplant.onrender.com/power/estimated/High">High (1000 &lt)</a></li>
-        </ul>
-    </p>
-    <p> 
-        <div class="dropdown">
-            <button>View by Country</button>
-            <div class="dropdown-content">
-                $$COUNTRY_LINKS$$
+    <h1 style="text-align: center;">Global Power Plants Database</h1>
+    <div style="float: right; padding-right:5rem;" id="chart"></div>
+    <div style="padding-left: 5rem;">
+        <p><a href="http://localhost:8000/">View All Data</a></p>
+        <p> View by primary fuel source: 
+            <ul>
+                <li><a href="http://localhost:8000/biomass">Biomass</a></li>
+                <li><a href="http://localhost:8000/coal">Coal</a></li>
+                <li><a href="http://localhost:8000/cogeneration">Cogeneration</a></li>
+                <li><a href="http://localhost:8000/gas">Gas</a></li>
+                <li><a href="http://localhost:8000/geothermal">Geothermal</a></li>
+                <li><a href="http://localhost:8000/hydro">Hydro</a></li>
+                <li><a href="http://localhost:8000/nuclear">Nuclear</a></li>
+                <li><a href="http://localhost:8000/oil">Oil</a></li>
+                <li><a href="http://localhost:8000/petcoke">Petcoke</a></li>
+                <li><a href="http://localhost:8000/solar">Solar</a></li>
+                <li><a href="http://localhost:8000/storage">Storage</a></li>
+                <li><a href="http://localhost:8000/waste">Waste</a></li>
+                <li><a href="http://localhost:8000/wave">Wave and Tidal</a></li>
+                <li><a href="http://localhost:8000/wind">Wind</a></li>
+                <li><a href="http://localhost:8000/other">Other</a></li>
+            </ul>
+        </p>
+        <p> View by capacity
+            <ul>
+                <li><a href="http://localhost:8000/capacitylow">Low (200 >)</a></li>
+                <li><a href="http://localhost:8000/capacitymedium">Medium (200-599)</a></li>
+                <li><a href="http://localhost:8000/capacityhigh">High (600 &lt)</a></li>
+            </ul>
+        </p>
+        <p> View by 2017 Estimated Energy Generation
+            <ul>
+                <li><a href="http://localhost:8000/low">Low (200 >)</a></li>
+                <li><a href="http://localhost:8000/medium">Medium (200-1000)</a></li>
+                <li><a href="http://localhost:8000/high">High (1000 &lt)</a></li>
+            </ul>
+        </p>
+        <p> 
+            <div class="dropdown">
+                <button">View by Country</button>
+                <div class="dropdown-content">
+                    $$COUNTRY_LINKS$$
+                </div>
             </div>
-        </div>
-    </p>
-    <div id="chart"></div>
-    <h2>$$Sorted_By_Header$$</h2>
-    <p><a href="%%Previous_Link%%">Previous  </a> <a href="%%Next_Link%%">Next</a></p>
-    <table>
+        </p>
+    </div>
+
+    <h2 style="text-align: center;">$$Sorted_By_Header$$</h2>
+    <p style="text-align: center;"><a href="%%Previous_Link%%">Previous</a>&emsp;&emsp;<a href="%%Next_Link%%">Next</a></p>
+    <table id="table">
         <thead>
             <tr>
                 <th>Country</th>
