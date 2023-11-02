@@ -235,7 +235,7 @@ app.get('', (req, res) => {
     let p2 = fs.promises.readFile(filePath, 'utf-8');
     Promise.all([p1,p2]).then((results) => {
         const graph = displayGraph(results[0]);
-        let response = displayTable(results, headerReplacement, 'https://powerplant.onrender.com/', 'https://powerplant.onrender.com/');
+        let response = displayTable(results, headerReplacement, 'https://powerplant.onrender.com/', 'https://powerplant.onrender.com/', graph);
         res.status(200).type('html').send(response);
     }).catch((error) => {
         console.log(error);
