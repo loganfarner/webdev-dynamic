@@ -234,7 +234,8 @@ app.get('', (req, res) => {
     let p1 = dbSelect('SELECT * FROM info');
     let p2 = fs.promises.readFile(filePath, 'utf-8');
     Promise.all([p1,p2]).then((results) => {
-        const graph = displayGraph(results[0]);
+        const origin='fuel';
+        const graph = displayGraph(origin, results[0]);
         let response = displayTable(results, headerReplacement, 'https://powerplant.onrender.com/', 'https://powerplant.onrender.com/', graph);
         res.status(200).type('html').send(response);
     }).catch((error) => {
@@ -257,14 +258,14 @@ app.get('', (req, res) => {
         });
     };
     finishAndSend();*/
-})
+});
 //function for the dropdown menu
 function countryDropdown(){
     let countries = '';
     for (var i = 0; i < countryArray.length; i++) {
         let countryName = countryArray[i].country_name;
         let countryCode = countryArray[i].country_code;
-        countries += '<a href="http://localhost:8000/power/country/' + countryCode + '">'+ countryName +'</a>';
+        countries += '<a href="https://powerplant.onrender.com/power/country/' + countryCode + '">'+ countryName +'</a>';
     }
     return countries;
 }
