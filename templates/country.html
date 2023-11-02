@@ -4,7 +4,7 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Global Power Plants Database</title>
-    <link rel="stylesheet" href="/css/plantStyles.css"/>
+    <link rel="stylesheet" href="/public/css/style.css"/>
 </head>
 <body>
     <h1>Global Power Plants Database</h1>
@@ -32,17 +32,16 @@
         <ul>
             <li><a href="https://powerplant.onrender.com/power/capacity/low">Low (200 >)</a></li>
             <li><a href="https://powerplant.onrender.com/power/capacity/medium">Medium (200-599)</a></li>
-            <li><a href="https://powerplant.onrender.com/power/capacity/High">High (600 &lt)</a></li>
+            <li><a href="https://powerplant.onrender.com/power/capacity/high">High (600 &lt)</a></li>
         </ul>
     </p>
-    <p> View by estimated electricity
+    <p> View by 2017 Estimated Energy Generation
         <ul>
             <li><a href="https://powerplant.onrender.com/power/estimated/low">Low (200 >)</a></li>
             <li><a href="https://powerplant.onrender.com/power/estimated/medium">Medium (200-1000)</a></li>
             <li><a href="https://powerplant.onrender.com/power/estimated/High">High (1000 &lt)</a></li>
         </ul>
     </p>
-
     <p> 
         <div class="dropdown">
             <button>View by Country</button>
@@ -51,7 +50,7 @@
             </div>
         </div>
     </p>
-
+    <div id="chart"></div>
     <h2>$$Sorted_By_Header$$</h2>
     <p><a href="%%Previous_Link%%">Previous  </a> <a href="%%Next_Link%%">Next</a></p>
     <table>
@@ -71,5 +70,32 @@
             $$TABLE_DATA$$
         </tbody>
     </table>
+
+
+
+    
+    
+    
+    <script src="https://cdn.plot.ly/plotly-latest.min.js" charset="utf-8"></script>
+    <script>
+    
+        const chartData = $$Graph$$;
+        const data = [{
+            x: chartData.countryNames,
+            y: chartData.estimated2017,
+            type: "bar"
+        }];
+    
+        
+    
+        Plotly.newPlot("chart", data);
+    
+    </script>
+
+
+
+
+
+
 </body>
 </html>

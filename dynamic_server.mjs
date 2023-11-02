@@ -162,7 +162,7 @@ app.get('/power/country/:code', (req, res) => {
     let p1 = dbSelect('SELECT * FROM info WHERE country_code = ?', [code_country]);
     let p2 = fs.promises.readFile(filePath, 'utf-8');
     Promise.all([p1,p2]).then((results) => {
-        const graph = displayGraph(results[0]);
+        const graph = displayGraph('estimated',results[0]);
         console.log(graph);
         let response = displayTable(results, headerReplacement, nextLink, previousLink,graph);
         res.status(200).type('html').send(response);
@@ -199,9 +199,7 @@ app.get('/power/estimated/:size', (req, res) => {
     }
     let p2 = fs.promises.readFile(filePath, 'utf-8');
     Promise.all([p1,p2]).then((results) => {
-        const graph = displayGraph(origin,results[0]);
-        console.log(graph);
-        
+        const graph = displayGraph(origin,results[0]);        
         //templateData = templateData.replace('$$Graph$$', JSON.stringify(chartData));
         let headerReplacement = "Plants with " + size + " 2017 Estimated Energy Generation";
         let response = displayTable(results, headerReplacement, nextLink, previousLink,graph);
@@ -234,8 +232,7 @@ app.get('', (req, res) => {
     let p1 = dbSelect('SELECT * FROM info');
     let p2 = fs.promises.readFile(filePath, 'utf-8');
     Promise.all([p1,p2]).then((results) => {
-        const origin='fuel';
-        const graph = displayGraph(origin, results[0]);
+        const graph = displayGraph('estimated', results[0]);
         let response = displayTable(results, headerReplacement, 'https://powerplant.onrender.com/', 'https://powerplant.onrender.com/', graph);
         res.status(200).type('html').send(response);
     }).catch((error) => {
