@@ -241,7 +241,22 @@ app.get('/home', (req, res) => {
     };
     finishAndSend();
 })
+app.get('', (req, res) => {
+    let finishAndSend = function() {
+        fs.readFile(path.join(templates, 'home.html'), 'utf-8', (err, data) => {
+            let countries = '';
 
+            for (var i = 0; i < countryArray.length; i++) {
+                let countryName = countryArray[i].country_name;
+                let countryCode = countryArray[i].country_code;
+                countries += '<li><a href="./power/country/' + countryCode + '">'+ countryName +'</li>';
+            }
+            let response = data.replace('$$COUNTRY_LINK$$', countries);
+            res.status(200).type('html').send(response);
+        });
+    };
+    finishAndSend();
+})
 //function for the dropdown menu
 function countryDropdown(){
     let countries = '';
