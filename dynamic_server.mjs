@@ -99,7 +99,7 @@ app.get('/power/fuel/:source', (req, res) => {
         console.log(error);
         //res.status(404).type('txt').send('404 Page Not Found. '+primary_fuel_lower+' is not a valid fuel source.');
     });
-};
+});
     
 
 
